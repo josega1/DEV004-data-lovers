@@ -1,30 +1,34 @@
-
-
-const botton = document.querySelector('button_players');
-const menu = document.querySelector('menu');
-const input = document.querySelector('input');
-botton.addEventListener('click', (e) => {
-    e.preventDefault();
-    data(input.value);
-})
-
-// console.log(datos);
-function data(Jugador){
-    fetch(`./data/datos.json/${Jugador}`).then(response => response.json()).then(data => createPlayers(data)).catch(error => console.error(error));
-    
-    createPlayers(Jugador);
+function getData(done) {
+  const results = fetch("./datos.json");
+  results
+    .then((res) => res.json())
+    .then((data) => {
+      done(data);
+    });
 }
 
-function createPlayers(Jugador) {
-    const img = document.createElement('img');
-    img.src = Jugador.image;
 
-    const h3 = document.createElement('h3');
-    h3.textContent = Jugador.name;
 
-    const div = document.createElement('div');
-    div.appendChild(img);
-    div.appendChild(h3);
+getData((data) => {
+  data.results.forEach((personaje) => {
+    const article = document.createRange().createContextualFragment(`
+        <article>
 
-    menu.appendChild(div)
-}
+        <div class="container">
+          <img class="img-player" src=${personaje.image} alt="jugador">
+          <img class="img-country-player" src=${personaje.national_team} alt="bandera-pais">
+
+          <h2 class="name-player">${personaje.name}</h2>
+          <span class="position-player">${personaje.position}</span>
+          <span class="birth-Date-player">${personaje.birth_Date}</span>
+          
+
+        </div>
+
+      </article>`
+      );
+
+    const main = document.querySelector("main");
+    main.appendChild(article);
+  });
+});
